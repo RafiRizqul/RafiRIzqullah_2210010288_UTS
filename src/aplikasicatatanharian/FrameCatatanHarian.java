@@ -5,17 +5,43 @@
  */
 package aplikasicatatanharian;
 
+import java.util.List;
+import javax.swing.DefaultListModel;
+
 /**
  *
  * @author ACER
  */
 public class FrameCatatanHarian extends javax.swing.JFrame {
 
+    DefaultListModel<Catatan> catatanModel; // Model untuk JList
+    CatatanDatabaseHelper dbHelper = new CatatanDatabaseHelper();
+
     /**
      * Creates new form FrameCatatanHarian
      */
     public FrameCatatanHarian() {
         initComponents();
+
+        setLocationRelativeTo(null); // Pindah window ke tengah layar
+
+        catatanModel = new DefaultListModel<>();
+        listCatatan.setModel(catatanModel);
+
+        // Memuat data catatan dari database
+        loadCatatan();
+
+        // Tambahkan listener untuk perubahan pemilihan item di JList
+        listCatatan.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                // Ambil catatan yang dipilih
+                Catatan selectedCatatan = listCatatan.getSelectedValue();
+                if (selectedCatatan != null) {
+                    // Tampilkan detail catatan di panel kanan
+                    showCatatanDetails(selectedCatatan);
+                }
+            }
+        });
     }
 
     /**
@@ -26,22 +52,193 @@ public class FrameCatatanHarian extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
+
+        jPanel1 = new javax.swing.JPanel();
+        jSplitPane1 = new javax.swing.JSplitPane();
+        jPanel2 = new javax.swing.JPanel();
+        txtCari = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        listCatatan = new javax.swing.JList<>();
+        jPanel3 = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
+        labelJudul = new javax.swing.JLabel();
+        labelTanggal = new javax.swing.JLabel();
+        labelCuaca = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
+        btnEdit = new javax.swing.JButton();
+        btnHapus = new javax.swing.JButton();
+        jPanel6 = new javax.swing.JPanel();
+        labelIsi = new javax.swing.JLabel();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        jPanel1.setLayout(new java.awt.GridLayout());
+
+        jSplitPane1.setDividerLocation(250);
+
+        jPanel2.setLayout(new java.awt.BorderLayout());
+
+        txtCari.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtCariKeyReleased(evt);
+            }
+        });
+        jPanel2.add(txtCari, java.awt.BorderLayout.PAGE_START);
+
+        listCatatan.setModel(new DefaultListModel<>());
+        jScrollPane1.setViewportView(listCatatan);
+
+        jPanel2.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+
+        jSplitPane1.setLeftComponent(jPanel2);
+
+        jPanel3.setLayout(new java.awt.BorderLayout());
+
+        jPanel4.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 10, 15, 10));
+        jPanel4.setLayout(new java.awt.BorderLayout());
+
+        labelJudul.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        labelJudul.setText("Judul");
+        jPanel4.add(labelJudul, java.awt.BorderLayout.CENTER);
+
+        labelTanggal.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        labelTanggal.setText("Tanggal");
+        jPanel4.add(labelTanggal, java.awt.BorderLayout.EAST);
+
+        labelCuaca.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        labelCuaca.setText("Cuaca");
+        jPanel4.add(labelCuaca, java.awt.BorderLayout.SOUTH);
+
+        jPanel3.add(jPanel4, java.awt.BorderLayout.NORTH);
+
+        btnEdit.setText("Edit Catatan");
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
+        jPanel5.add(btnEdit);
+
+        btnHapus.setText("Hapus Catatan");
+        btnHapus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHapusActionPerformed(evt);
+            }
+        });
+        jPanel5.add(btnHapus);
+
+        jPanel3.add(jPanel5, java.awt.BorderLayout.SOUTH);
+
+        jPanel6.setLayout(new java.awt.BorderLayout());
+
+        labelIsi.setText("Isi Text..");
+        labelIsi.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        labelIsi.setPreferredSize(new java.awt.Dimension(150, 150));
+        jPanel6.add(labelIsi, java.awt.BorderLayout.CENTER);
+
+        jPanel3.add(jPanel6, java.awt.BorderLayout.CENTER);
+
+        jSplitPane1.setRightComponent(jPanel3);
+
+        jPanel1.add(jSplitPane1);
+
+        getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
+
+        jMenu1.setText("Catatan");
+
+        jMenuItem1.setText("Buat baru");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem1);
+
+        jMenuItem2.setText("Impor JSON");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem2);
+
+        jMenuItem3.setText("Ekspor JSON");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem3);
+
+        jMenuBar1.add(jMenu1);
+
+        setJMenuBar(jMenuBar1);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        DialogBuatCatatan dialog = new DialogBuatCatatan(this, true, dbHelper);
+        dialog.setCatatan(null); // Null untuk catatan baru
+        dialog.setVisible(true);
+        loadCatatan();
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        Catatan selected = listCatatan.getSelectedValue();
+        if (selected != null) {
+            // Jika ada catatan yang dipilih, buka dialog untuk mengedit
+            DialogBuatCatatan dialog = new DialogBuatCatatan(this, true, dbHelper);
+            dialog.setCatatan(selected); // Kirim data catatan ke dialog
+            dialog.setVisible(true);
+            loadCatatan();  // Memuat ulang daftar catatan setelah edit
+        } else {
+            // Jika tidak ada catatan yang dipilih, tampilkan dialog error
+            javax.swing.JOptionPane.showMessageDialog(this, "Pilih catatan yang akan diedit.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnEditActionPerformed
+
+    private void btnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHapusActionPerformed
+        Catatan selectedCatatan = listCatatan.getSelectedValue();
+        if (selectedCatatan != null) {
+            // Jika ada catatan yang dipilih, hapus catatan
+            dbHelper.deleteCatatan(selectedCatatan.getId());
+            loadCatatan(); // Memuat ulang daftar catatan setelah hapus
+            javax.swing.JOptionPane.showMessageDialog(this, "Catatan berhasil dihapus.");
+        } else {
+            // Jika tidak ada catatan yang dipilih, tampilkan dialog error
+            javax.swing.JOptionPane.showMessageDialog(this, "Pilih catatan yang akan dihapus.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnHapusActionPerformed
+
+    private void txtCariKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCariKeyReleased
+        // Mengambil semua catatan dari database
+        List<Catatan> catatanList = dbHelper.getAllCatatan();
+
+        // Menghapus data lama di model
+        catatanModel.clear();
+
+        // Menambahkan catatan yang sesuai dengan query pencarian
+        for (Catatan catatan : catatanList) {
+            if (catatan.toString().toLowerCase().contains(txtCari.getText().toLowerCase())) {
+                catatanModel.addElement(catatan);
+            }
+        }
+    }//GEN-LAST:event_txtCariKeyReleased
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        ImportExportJSON.importCatatanFromJSON(this);
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        ImportExportJSON.exportCatatanToJSON(this);
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -57,16 +254,24 @@ public class FrameCatatanHarian extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FrameCatatanHarian.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrameCatatanHarian.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FrameCatatanHarian.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrameCatatanHarian.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FrameCatatanHarian.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrameCatatanHarian.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FrameCatatanHarian.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrameCatatanHarian.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
@@ -79,5 +284,50 @@ public class FrameCatatanHarian extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnEdit;
+    private javax.swing.JButton btnHapus;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JLabel labelCuaca;
+    private javax.swing.JLabel labelIsi;
+    private javax.swing.JLabel labelJudul;
+    private javax.swing.JLabel labelTanggal;
+    private javax.swing.JList<Catatan> listCatatan;
+    private javax.swing.JTextField txtCari;
     // End of variables declaration//GEN-END:variables
+
+    void loadCatatan() {
+        // Mengambil semua catatan dari database
+        List<Catatan> catatanList = dbHelper.getAllCatatan();
+
+        // Menghapus data lama di model
+        catatanModel.clear();
+
+        // Menambahkan semua catatan yang diambil ke dalam model
+        for (Catatan catatan : catatanList) {
+            catatanModel.addElement(catatan);
+        }
+    }
+
+    private void showCatatanDetails(Catatan catatan) {
+        // Set judul, tanggal, dan cuaca pada label yang ada di panel kanan
+        labelJudul.setText(catatan.getJudul());
+        labelTanggal.setText(catatan.getTanggal().toString());  // Menampilkan tanggal
+        labelCuaca.setText(catatan.getCuaca());  // Menampilkan cuaca
+
+        // Menampilkan isi catatan di labelIsi
+        labelIsi.setText("<html>" + catatan.getIsiCatatan().replace("\n", "<br>") + "</html>");
+    }
+
 }
